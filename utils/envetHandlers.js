@@ -5,6 +5,8 @@ const divident = require("../models/divident");
 const blackListed = require("../models/blackListed");
 const unstakes = require("../models/unstakes");
 const ExpireTime = require("../models/ExpireTime");
+const ProposalExecuted = require("../models/ProposalExecuted");
+const ProposalExecutedReward = require("../models/ProposalExecutedReward");
 
 //All contract events handler Object
 const allEventsHandler = {
@@ -15,6 +17,8 @@ const allEventsHandler = {
   BlackListed: BlackListedData,
   Unstaked: UnstakedData,
   ExpireTimeChanged: ExpireTimeChangedData,
+  ProposalExecuted: ProposalExecutedData,
+  ProposalExecutedReward: ProposalExecutedRewardData,
 }; // each key have its own handler function
 
 // contract events handler functions
@@ -47,11 +51,11 @@ async function ProposalCreatedData(evendData) {
       evendData;
     const depositObj = {
       user: returnValues.user?.toLowerCase(),
-      proposalId: Number(returnValues._proposalId),
-      startTime:returnValues.startTime,
-      endTime:returnValues.endTime,
-      name: returnValues._name,
-      ipfshash: returnValues._ipfsHash,
+      proposalId: Number(returnValues.proposalId),
+      startTime:returnValues.startTimestamp,
+      endTime:returnValues.endTimestamp,
+      name: returnValues.name,
+      ipfshash: returnValues.ipfsHash,
       timestamp: timestamp,
       txHash: transactionHash,
       block: blockNumber,
@@ -74,7 +78,8 @@ async function voteData(evendData) {
 
     const directClaimObj = {
       user: returnValues.user.toLowerCase(),
-      proposalId: returnValues._proposalId,
+      proposalId: returnValues.proposalId,
+      isYes: returnValues.isYes,
       voteAmount: Number(returnValues.voteAmount),
       timestamp: timestamp,
       txHash: transactionHash,
@@ -171,5 +176,45 @@ async function UnstakedData(evendData) {
     return;
   }
 }
+async function ProposalExecutedData(evendData) {
+  try {
+    const { blockNumber, transactionHash, returnValues, event, timestamp } =
+      evendData;
+    const drawleadershipobj = {
+      proposalId: returnValues.proposalId,
+      isPassed: returnValues.isPassed,
+      timestamp: timestamp,
+      txHash: transactionHash,
+      block: blockNumber,
+    };
+    await ProposalExecuted.create(drawleadershipobj);
+
+    return;
+  } catch (e) {
+    console.log(e, "Erorr in drawLeaderShipEventHandler");
+    return;
+  }
+}
+async function ProposalExecutedRewardData(evendData) {
+  try {
+    const { blockNumber, transactionHash, returnValues, event, timestamp } =
+      evendData;
+    const drawleadershipobj = {
+      user: returnValues.user.toLowerCase(),
+      proposalId: returnValues.proposalId,
+      reward: Number(returnValues.reward),
+      timestamp: timestamp,
+      txHash: transactionHash,
+      block: blockNumber,
+    };
+    await ProposalExecutedReward.create(drawleadershipobj);
+
+    return;
+  } catch (e) {
+    console.log(e, "Erorr in drawLeaderShipEventHandler");
+    return;
+  }
+}
+
 
 module.exports = allEventsHandler;

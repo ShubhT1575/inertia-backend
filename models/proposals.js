@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const Proposals = new mongoose.Schema(
   {
-    user: { type: String, required: true },
-    proposalId: { type: String, required: true },
-    name: { type: String, required: true },
-    ipfshash:{ type: String, required: true },
-    startTime:{type:Number,required:true},
-    endTime:{type:Number,required:true},
-    timestamp: { type: Number, required: true },
-    txHash: { type: String, required: true, unique: true },
-    block: { type: Number, required: true },
+    user: { type: String },
+    proposalId: { type: Number },
+    name: { type: String },
+    ipfshash:{ type: String },
+    startTime:{type:Number},
+    endTime:{type:Number},
+    timestamp: { type: Number },
+    txHash: { type: String},
+    block: { type: Number },
   },
   { timestamps: true, collection: "proposal" }
 );
