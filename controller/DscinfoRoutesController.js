@@ -7,6 +7,7 @@ const unstakes = require("../models/unstakes");
 const { isValidEthereumAddress } = require("../utils/web3");
 const stakes = require("../models/stakes");
 const proposals = require("../models/proposals");
+const ProposalExecuted = require("../models/ProposalExecuted");
 
 module.exports = {
   getStakeAndUnstakeList: async (req, res) => {
@@ -632,6 +633,29 @@ getStakingListByuser: async (req, res) => {
     });
   } catch (e) {
     console.log(e, "Error in getStakingList");
+    return res.json({
+      message: "Internal server error",
+      status: 500,
+    });
+  }
+},
+getExecutedProposal: async (req, res) => {
+  try {
+    const data = await ProposalExecuted.find().sort({createdAt:-1});
+    if (data) {
+      return res.json({
+        message: "Executed proposal list",
+        status: 200,
+        data,
+      });
+    } else {
+      return res.json({
+        message: "something went wrong",
+        status: 500,
+      });
+    }
+  } catch (error) {
+    console.log(error, "Error in getExecutedProposal");
     return res.json({
       message: "Internal server error",
       status: 500,
