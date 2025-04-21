@@ -661,5 +661,41 @@ getExecutedProposal: async (req, res) => {
       status: 500,
     });
   }
+},
+getDividendList: async (req, res) => {
+  try {
+    const { address } = req.query;
+    if (!address) {
+      return res.json({
+        message: "Please provide user Address",
+        status: 400,
+      });
+    }
+    if (!isValidEthereumAddress(address)) {
+      return res.json({
+        message: "Sorry invalid user address",
+        status: 400,
+      });
+    }
+    const data = await divident.find({user: address}).sort({createdAt:-1});
+    if (data) {
+      return res.json({
+        message: "Dividend list",
+        status: 200,
+        data,
+      });
+    } else {
+      return res.json({
+        message: "something went wrong",
+        status: 500,
+      });
+    }
+  } catch (error) {
+    console.log(error, "Error in getDividendList");
+    return res.json({
+      message: "Internal server error",
+      status: 500,
+    });
+  }
 }
 };
