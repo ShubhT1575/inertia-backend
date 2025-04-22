@@ -15,7 +15,6 @@ DscinfoRouter.get("/minimum-quorum",DscinfoRoutesController.getMinimumQuorumData
 DscinfoRouter.get("/delegators-data",DscinfoRoutesController.getDelegatorsData);
 DscinfoRouter.get("/governance-data",DscinfoRoutesController.getStakingListByuser);
 DscinfoRouter.get("/proposal-executed",DscinfoRoutesController.getExecutedProposal);
-DscinfoRouter.get("/dividend-list",DscinfoRoutesController.getDividendList);
 
 
 
