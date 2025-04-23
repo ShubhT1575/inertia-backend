@@ -8,6 +8,7 @@ const { isValidEthereumAddress } = require("../utils/web3");
 const stakes = require("../models/stakes");
 const proposals = require("../models/proposals");
 const ProposalExecuted = require("../models/ProposalExecuted");
+const ProposalExecutedReward = require("../models/ProposalExecutedReward");
 
 module.exports = {
   getStakeAndUnstakeList: async (req, res) => {
@@ -662,4 +663,38 @@ getExecutedProposal: async (req, res) => {
     });
   }
 },
+getExecutedProposalReward: async (req, res) => {
+  
+  const { userAddress } = req.query;
+  if (!userAddress) {
+    return res.json({
+      message: "Please provide user Address",
+      status: 400,
+    });
+  }
+
+  const lowerCaseUserAddress = userAddress.toLowerCase();
+
+  try {
+    const data = await ProposalExecutedReward.find({user: lowerCaseUserAddress}).sort({createdAt:-1});
+    if (data) {
+      return res.json({
+        message: "Executed proposal list",
+        status: 200,
+        data,
+      });
+    } else {
+      return res.json({
+        message: "something went wrong",
+        status: 500,
+      });
+    }
+  } catch (error) {
+    console.log(error, "Error in getExecutedProposal");
+    return res.json({
+      message: "Internal server error",
+      status: 500,
+    });
+  }
+}
 };
