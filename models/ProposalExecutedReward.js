@@ -6,7 +6,7 @@ const ProposalExecutedRewardSchema = new mongoose.Schema(
     user: { type: String, index: true },           // Useful for tracking rewards by user
     reward: { type: Number },
     timestamp: { type: Number, index: true },      // For sorting/filtering by time
-    txHash: { type: String, unique: true, index: true }, // Ensures no duplicate transactions
+    txHash: { type: String }, // Ensures no duplicate transactions
     block: { type: Number, index: true },          // For queries based on block number
   },
   { timestamps: true, collection: "ProposalExecutedReward" }
